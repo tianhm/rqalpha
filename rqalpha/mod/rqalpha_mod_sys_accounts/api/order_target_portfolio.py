@@ -73,6 +73,15 @@ class DenialReason(CommentedEnum):
     closable_exceeded = 'closable_exceeded', lazy_gettext('Order creation failed: insufficient closable position')
 
 
+SUPPORTED_INSTRUMENT_TYPES = {
+    INSTRUMENT_TYPE.CS,
+    INSTRUMENT_TYPE.CONVERTIBLE,
+    INSTRUMENT_TYPE.ETF,
+    INSTRUMENT_TYPE.LOF,
+    INSTRUMENT_TYPE.REITs,
+}
+
+
 class OrderTargetPortfolio:
     def __init__(
         self,
@@ -102,7 +111,7 @@ class OrderTargetPortfolio:
 
         instruments = env.data_proxy.get_active_instruments(index, env.trading_dt)
         for i in instruments.values():
-            if i.type != INSTRUMENT_TYPE.CS:
+            if i.type not in SUPPORTED_INSTRUMENT_TYPES:
                 raise RQApiNotSupportedError(_('instrument type {} is not supported').format(i.type))
 
         self._market = Series({i.order_book_id: i.market for i in instruments.values()}, dtype='object')
@@ -305,6 +314,7 @@ class OrderTargetPortfolio:
             last_proportion_diff = proportion_diff
             safety -= min(max(proportion_diff / 10, 0.0001), 0.002)
         return AdjustingResult(adjustments=last_diff, denials=self._format_denials(last_denials))
+
 
 @export_as_api
 @ExecutionContext.enforce_phase(
