@@ -100,8 +100,15 @@ class OrderTargetPortfolio:
         self._env = env
 
         instruments = env.data_proxy.get_active_instruments(index, env.trading_dt)
+        supported_instrument_types = {
+            INSTRUMENT_TYPE.CS,
+            INSTRUMENT_TYPE.CONVERTIBLE,
+            INSTRUMENT_TYPE.ETF,
+            INSTRUMENT_TYPE.LOF,
+            INSTRUMENT_TYPE.REITs,
+        }
         for i in instruments.values():
-            if i.type != INSTRUMENT_TYPE.CS:
+            if i.type not in supported_instrument_types:
                 raise RQApiNotSupportedError(_('instrument type {} is not supported').format(i.type))
 
         self._market = Series({i.order_book_id: i.market for i in instruments.values()}, dtype='object')
@@ -303,6 +310,7 @@ class OrderTargetPortfolio:
             last_proportion_diff = proportion_diff
             safety -= min(max(proportion_diff / 10, 0.0001), 0.002)
         return AdjustingResult(adjustments=last_diff, denials=self._format_denials(last_denials))
+
 
 @export_as_api
 @ExecutionContext.enforce_phase(
