@@ -256,6 +256,36 @@ def test_order_target_portfolio():
     run_func(config=config, init=init, handle_bar=handle_bar)
 
 
+def test_order_target_portfolio_of_fund():
+    # 测试 ETF/LOF/REITs 的 order_target_portfolio 下单
+    config = {
+        "base": {
+            "start_date": "2026-03-01",
+            "end_date": "2026-03-10",
+            "accounts": {
+                "stock": 1000000
+            }
+        },
+    }
+
+    def init(context):
+        context.fired = False
+
+    def handle_bar(context, bar_dict):
+        if not context.fired:
+            order_target_portfolio({
+                "511700.XSHG": 0.1,  # ETF
+                "180101.XSHE": 0.1,  # REITs
+                "160125.XSHE": 0.1,  # LOF
+            })
+            assert get_position("511700.XSHG").quantity == 1000  # (1000000 * 0.1) / 100.9 = 991.08
+            assert get_position("180101.XSHE").quantity == 50600  # (1000000 * 0.1) / 1.975 = 50632.91
+            assert get_position("160125.XSHE").quantity == 54900  # (1000000 * 0.1) / 1.822 = 54884.74
+            context.fired = True
+
+    run_func(config=config, init=init, handle_bar=handle_bar)
+
+
 def test_order_target_portfolio_in_signal_mode():
     config = {
         "base": {
