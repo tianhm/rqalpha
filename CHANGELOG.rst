@@ -5,8 +5,13 @@ CHANGELOG
 6.1.4
 ==================
 
+下单接口变更：
 - `order_target_portfolio_smart` API 支持 ETF/LOF/REITs 品种
 - `order_target_portfolio` API 支持 REITs 品种
+
+涨跌停边界撮合修正：
+- 是否触及涨跌停判断修改为按 tick_size 做容差处理
+- 获取到的涨跌停价为 NaN 时，认为标的没有涨跌停限制
 
 
 6.1.3
