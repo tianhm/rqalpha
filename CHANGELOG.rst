@@ -2,6 +2,25 @@
 CHANGELOG
 ==================
 
+6.1.4
+==================
+
+- `order_target_portfolio_smart` API 支持 ETF/LOF/REITs 品种
+- `order_target_portfolio` API 支持 REITs 品种
+
+
+6.1.3
+==================
+
+- 修复 `all_instruments` 获取数据确实的问题
+
+
+6.1.2
+==================
+
+- 修复更新 bundle 数据时，由于数据量过大导致断开与 rqdata 的连接
+
+
 6.1.0
 ==================
 
