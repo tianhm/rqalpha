@@ -2,6 +2,23 @@
 CHANGELOG
 ==================
 
+6.4.1
+==================
+
+**[新增功能]**
+
+- 新增 ``rqalpha.utils.datetime_func`` 下的 ``china_now``、``china_today`` 与时区常量 ``CHINA_TIMEZONE``，用于获取中国市场时区（北京时间，东八区）的当前时间与日期，取值与运行机器所在时区无关
+
+**[问题修复]**
+
+- 修复 bundle 生成与更新流程取用运行机器本地日期的问题：bundle 下载地址的月份、收益率曲线与 ST/停牌数据的截止日、日线 bundle 是否需要更新，均改为按中国市场时区（北京时间）判断
+- 修复 ``history_bars`` 无法获取指数上市前行情的问题
+
+**[For Mod 开发者] 接口变更指引**
+
+- ``DataProxy.history_bars`` 首个参数由 ``order_book_id`` 改为 ``id_or_ins``，可传入 ``order_book_id`` 字符串或 ``Instrument`` 对象；以 ``order_book_id=`` 关键字调用的 Mod 需改用 ``id_or_ins=``。传入 ``Instrument`` 时直接使用该合约，不再按查询时点重新定位合约（需要「按 dt 选择合约、含指数上市前行情放宽」的行为时，请继续传入字符串）。
+
+
 6.4.0
 ==================
 
